@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using Serilog;
 
-namespace AvatarStar.Server.Launcher;
+namespace AvatarStar.Server.Login;
 
 public class Client
 {

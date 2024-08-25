@@ -1,6 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvatarStar.Server.Launcher", "AvatarStar.Server.Launcher\AvatarStar.Server.Launcher.csproj", "{FAD7B06A-412C-4206-9519-349C0741B23C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvatarStar.Server.Login", "AvatarStar.Server.Login\AvatarStar.Server.Login.csproj", "{FAD7B06A-412C-4206-9519-349C0741B23C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{91AD91ED-08B1-47F7-A81D-4C52FFBD11AD}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

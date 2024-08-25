@@ -1,6 +1,6 @@
 ﻿using System.Net.Sockets;
 
-namespace AvatarStar.Server.Launcher;
+namespace AvatarStar.Server.Login;
 
 public class ClientHandler
 {

@@ -1,0 +1,1 @@
+"D:\Games\CherryDeGames\Avatar Star\client.exe" -ip 127.0.0.1 -port 1234 -token AuthToken -title AvatarStar -local en_sg

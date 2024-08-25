@@ -1,7 +1,7 @@
 ﻿using System.Buffers;
 using System.Buffers.Binary;
 
-namespace AvatarStar.Server.Launcher;
+namespace AvatarStar.Server.Login;
 
 public class ClientBuffer : IDisposable
 {

@@ -1,4 +1,4 @@
-﻿namespace AvatarStar.Server.Launcher;
+﻿namespace AvatarStar.Server.Login;
 
 public enum ErrorCodes
 {
