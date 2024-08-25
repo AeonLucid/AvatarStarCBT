@@ -5,16 +5,14 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Serilog" Version="4.0.1" />
-      <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+      <ProjectReference Include="..\AvatarStar.Server\AvatarStar.Server.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\AvatarStar.Server\AvatarStar.Server.csproj" />
+      <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
     </ItemGroup>
 
 </Project>

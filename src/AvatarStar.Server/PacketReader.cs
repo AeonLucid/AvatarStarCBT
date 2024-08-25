@@ -1,7 +1,7 @@
 ﻿using System.Buffers.Binary;
 using System.Text;
 
-namespace AvatarStar.Server.Login;
+namespace AvatarStar.Server;
 
 public class PacketReader
 {

@@ -1,6 +1,6 @@
 ﻿namespace AvatarStar.Server.Login;
 
-public enum ErrorCodes
+public enum ServerErrorCode
 {
     Success = 0,
     SystemError = 1001,

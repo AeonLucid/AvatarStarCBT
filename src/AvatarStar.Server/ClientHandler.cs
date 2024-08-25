@@ -1,6 +1,4 @@
-﻿using System.Net.Sockets;
-
-namespace AvatarStar.Server.Login;
+﻿namespace AvatarStar.Server;
 
 public class ClientHandler
 {
@@ -11,10 +9,8 @@ public class ClientHandler
         _clients = new HashSet<Client>();
     }
 
-    public Client AddClient(Socket socket)
+    public Client AddClient(Client client)
     {
-        var client = new Client(this, socket);
-
         _clients.Add(client);
 
         return client;

@@ -1,24 +1,38 @@
 ﻿using System.Buffers;
 using System.Buffers.Binary;
+using AvatarStar.Server.Utilities;
+using Serilog;
+using Serilog.Events;
 
-namespace AvatarStar.Server.Login;
+namespace AvatarStar.Server;
 
 public class ClientBuffer : IDisposable
 {
     private const int BufferSize = 4096;
     private const int MinimalPacketSize = 3;
     
+    private readonly int _minPacketLength;
+    private readonly int _packetLengthSize;
+    
     private IMemoryOwner<byte> _buffer;
     private int _bufferLen;
     
-    public ClientBuffer()
+    public ClientBuffer(int minPacketLength, int packetLengthSize)
     {
+        _minPacketLength = minPacketLength;
+        _packetLengthSize = packetLengthSize;
         _buffer = MemoryPool<byte>.Shared.Rent(BufferSize);
         _bufferLen = 0;
     }
     
     public void Append(Memory<byte> data)
     {
+        if (Log.IsEnabled(LogEventLevel.Debug))
+        {
+            Console.WriteLine("Received {0} bytes", data.Length);
+            Console.WriteLine(HexDump.Dump(data.ToArray()));
+        }
+        
         // Check if fits in buffer, if not grow the buffer
         if (_bufferLen + data.Length > _buffer.Memory.Length)
         {
@@ -43,7 +57,14 @@ public class ClientBuffer : IDisposable
         // Read packets from buffer
         while (_bufferLen - bufferPos >= MinimalPacketSize)
         {
-            var packetSize = BinaryPrimitives.ReadInt16LittleEndian(_buffer.Memory.Slice(bufferPos, 2).Span);
+            var packetSize = _packetLengthSize switch
+            {
+                1 => _buffer.Memory.Span[bufferPos],
+                2 => BinaryPrimitives.ReadInt16LittleEndian(_buffer.Memory.Span.Slice(bufferPos)),
+                4 => BinaryPrimitives.ReadInt32LittleEndian(_buffer.Memory.Span.Slice(bufferPos)),
+                _ => throw new InvalidOperationException("Invalid packet length size")
+            };
+            
             if (packetSize > _bufferLen)
             {
                 break;

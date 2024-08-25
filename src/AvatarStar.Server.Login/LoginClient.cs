@@ -1,94 +1,15 @@
-﻿using System.Buffers;
-using System.Net;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using Serilog;
 
 namespace AvatarStar.Server.Login;
 
-public class Client
+public class LoginClient : Client
 {
-    private readonly ClientHandler _clientHandler;
-    private readonly Socket _socket;
-    private readonly CancellationTokenSource _cancellationToken;
-    
-    private Task? _loopTask;
-    
-    public Client(ClientHandler clientHandler, Socket socket)
+    public LoginClient(ClientHandler clientHandler, Socket socket) : base(clientHandler, socket)
     {
-        _clientHandler = clientHandler;
-        _socket = socket;
-        _cancellationToken = new CancellationTokenSource();
-    }
-    
-    public IPEndPoint RemoteEndPoint => (IPEndPoint)_socket.RemoteEndPoint!;
-
-    /// <summary>
-    ///     Start receiving data from the client.
-    /// </summary>
-    public void Start()
-    {
-        if (_loopTask != null)
-        {
-            return;
-        }
-        
-        _loopTask = LoopAsync();
     }
 
-    /// <summary>
-    ///     Stop receiving data from the client.
-    /// </summary>
-    public Task Stop()
-    {
-        if (_loopTask == null)
-        {
-            return Task.CompletedTask;
-        }
-        
-        _cancellationToken.Cancel();
-        _clientHandler.RemoveClient(this);
-        
-        return _loopTask;
-    }
-
-    private async Task LoopAsync()
-    {
-        using var buffer = new ClientBuffer();
-        using var temp = MemoryPool<byte>.Shared.Rent(4096);
-        
-        while (!_cancellationToken.IsCancellationRequested)
-        {
-            try
-            {
-                var dataLen = await _socket.ReceiveAsync(temp.Memory, _cancellationToken.Token);
-                if (dataLen == 0)
-                {
-                    Log.Information("Client disconnected");
-                    _ = Stop();
-                    break;
-                }
-
-                buffer.Append(temp.Memory.Slice(0, dataLen));
-
-                foreach (var reader in buffer.Process())
-                {
-                    await HandleAsync(reader);
-                }
-            }
-            catch (SocketException e) when (e.SocketErrorCode == SocketError.ConnectionReset)
-            {
-                Log.Information("Client disconnected");
-                _ = Stop();
-                break;
-            }
-            catch (Exception e)
-            {
-                Log.Error(e, "Caught exception in client loop");
-            }
-        }
-    }
-
-    private async Task HandleAsync(PacketReader reader)
+    protected override async Task HandleAsync(PacketReader reader)
     {
         var packetLen = reader.ReadShort();
         var packetId = reader.ReadByte();
@@ -127,7 +48,7 @@ public class Client
                 }
 
                 // await WritePacket0(ErrorCodes.InvalidCommand);
-                await WritePacket3(ErrorCodes.Success, "AuthToken");
+                await WritePacket3(ServerErrorCode.Success, "AuthToken");
                 break;
             }
 
@@ -150,7 +71,12 @@ public class Client
         }
     }
 
-    private async Task WritePacket0(ErrorCodes errorCode)
+    protected override ClientBuffer CreateBuffer()
+    {
+        return new ClientBuffer(minPacketLength: 3, packetLengthSize: 2);
+    }
+
+    private async Task WritePacket0(ServerErrorCode errorCode)
     {
         using var writer = new PacketWriter(0);
         
@@ -203,7 +129,7 @@ public class Client
     ///     - serverStringTwo
     ///     - serverDataOne (optional)
     /// </summary>
-    private async Task WritePacket3(ErrorCodes errorCode, string? authToken)
+    private async Task WritePacket3(ServerErrorCode errorCode, string? authToken)
     {
         using var writer = new PacketWriter(3);
         
@@ -211,7 +137,7 @@ public class Client
         writer.WriteInt((int)errorCode);
         
         // Data below only when error code is success.
-        if (errorCode == ErrorCodes.Success)
+        if (errorCode == ServerErrorCode.Success)
         {
             // 1 = Verification ?
             // 4 = ?
@@ -266,9 +192,4 @@ public class Client
     }
     
     // Packet 255: Empty packet
-
-    private async Task SendAsync(PacketWriter writer)
-    {
-        await _socket.SendAsync(writer.GetData(), SocketFlags.None);
-    }
 }

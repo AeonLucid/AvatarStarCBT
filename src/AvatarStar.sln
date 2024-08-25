@@ -7,6 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{91AD91ED-0
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvatarStar.Server.Game", "AvatarStar.Server.Game\AvatarStar.Server.Game.csproj", "{83458EA8-A252-487A-9D29-4C20C8327F53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvatarStar.Server", "AvatarStar.Server\AvatarStar.Server.csproj", "{83D4465F-7D21-47B1-BAC9-AA30EED9B17F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,5 +21,13 @@ Global
 		{FAD7B06A-412C-4206-9519-349C0741B23C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAD7B06A-412C-4206-9519-349C0741B23C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FAD7B06A-412C-4206-9519-349C0741B23C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83458EA8-A252-487A-9D29-4C20C8327F53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83458EA8-A252-487A-9D29-4C20C8327F53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83458EA8-A252-487A-9D29-4C20C8327F53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83458EA8-A252-487A-9D29-4C20C8327F53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83D4465F-7D21-47B1-BAC9-AA30EED9B17F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83D4465F-7D21-47B1-BAC9-AA30EED9B17F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83D4465F-7D21-47B1-BAC9-AA30EED9B17F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83D4465F-7D21-47B1-BAC9-AA30EED9B17F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
