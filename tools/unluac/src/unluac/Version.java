@@ -41,6 +41,7 @@ public class Version {
   public static enum HeaderType {
     LUA50,
     LUA51,
+    LUA52Alpha,
     LUA52,
     LUA53,
     LUA54,
@@ -60,6 +61,7 @@ public class Version {
   public static enum FunctionType {
     LUA50,
     LUA51,
+    LUA52Alpha,
     LUA52,
     LUA53,
     LUA54,
@@ -75,6 +77,7 @@ public class Version {
   public static enum OpcodeMapType {
     LUA50,
     LUA51,
+    LUA52Alpha,
     LUA52,
     LUA53,
     LUA54,
@@ -155,7 +158,42 @@ public class Version {
     this.minor = minor;
     name = major + "." + minor;
     final boolean luaj = config.luaj;
-    if(major == 5 && minor >= 0 && minor <= 4) {
+    if(config.lua_version != null) {
+      switch(config.lua_version) {
+        case "5.2-alpha":
+          varargtype = new Setting<>(VarArgType.HYBRID);
+          useupvaluecountinheader = new Setting<>(false);
+          headertype = HeaderType.LUA52Alpha;
+          stringtype = StringType.LUA50;
+          upvaluetype = UpvalueType.LUA50;
+          functiontype = FunctionType.LUA52Alpha;
+          typemap = TypeMapType.LUA52;
+          opcodemap = OpcodeMapType.LUA52Alpha;
+          defaultop = Op.DEFAULT;
+          instructionformat = new Setting<>(InstructionFormat.LUA51);
+          outerblockscopeadjustment = new Setting<>(-1);
+          extendedrepeatscope = new Setting<Boolean>(false);
+          closeinscope = new Setting<Boolean>(true);
+          closesemantics = new Setting<CloseSemantics>(CloseSemantics.DEFAULT);
+          upvaluedeclarationtype = new Setting<>(UpvalueDeclarationType.HEADER);
+          fortarget = new Setting<>(null);
+          tfortarget = new Setting<>(Op.TFORCALL);
+          whileformat = new Setting<>(WhileFormat.TOP_CONDITION);
+          allowpreceedingsemicolon = new Setting<>(false);
+          usenestinglongstrings = new Setting<>(false);
+          environmenttable = new Setting<>(null);
+          useifbreakrewrite = new Setting<>(false);
+          usegoto = new Setting<>(false);
+          rkoffset = new Setting<>(256);
+          allownegativeint = new Setting<Boolean>(luaj);
+          constantslengthmode = new Setting<>(luaj ? ListLengthMode.ALLOW_NEGATIVE : ListLengthMode.STRICT);
+          functionslengthmode = new Setting<>(luaj ? ListLengthMode.ALLOW_NEGATIVE : ListLengthMode.STRICT);
+          locallengthmode = new Setting<>(luaj ? ListLengthMode.ALLOW_NEGATIVE : ListLengthMode.STRICT);
+          upvaluelengthmode = new Setting<>(luaj ? ListLengthMode.ALLOW_NEGATIVE : ListLengthMode.STRICT);
+          break;
+        default: throw new IllegalStateException();
+      }
+    } else if(major == 5 && minor >= 0 && minor <= 4) {
       switch(minor) {
         case 0:
           varargtype = new Setting<>(VarArgType.ARG);

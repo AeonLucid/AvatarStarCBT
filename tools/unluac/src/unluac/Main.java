@@ -68,6 +68,13 @@ public class Main {
           } else {
             error("option \"" + arg + "\" doesn't have an argument", true);
           }
+        } else if (arg.equals("--lua_version")) {
+          if(i + 1 < args.length) {
+            config.lua_version = args[i + 1];
+            i++;
+          } else {
+            error("option \"" + arg + "\" doesn't have an argument", true);
+          }
         } else {
           error("unrecognized option: " + arg, true);
         }

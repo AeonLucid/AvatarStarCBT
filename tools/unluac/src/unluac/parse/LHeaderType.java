@@ -15,6 +15,7 @@ abstract public class LHeaderType extends BObjectType<LHeader> {
 
   public static final LHeaderType TYPE50 = new LHeaderType50();
   public static final LHeaderType TYPE51 = new LHeaderType51();
+  public static final LHeaderType TYPE52Alpha = new LHeaderType52Alpha();
   public static final LHeaderType TYPE52 = new LHeaderType52();
   public static final LHeaderType TYPE53 = new LHeaderType53();
   public static final LHeaderType TYPE54 = new LHeaderType54();
@@ -23,6 +24,7 @@ abstract public class LHeaderType extends BObjectType<LHeader> {
     switch(type) {
       case LUA50: return TYPE50;
       case LUA51: return TYPE51;
+      case LUA52Alpha: return TYPE52Alpha;
       case LUA52: return TYPE52;
       case LUA53: return TYPE53;
       case LUA54: return TYPE54;
@@ -370,7 +372,7 @@ class LHeaderType51 extends LHeaderType {
   
 }
 
-class LHeaderType52 extends LHeaderType {
+class LHeaderType52Alpha extends LHeaderType {
   
   @Override
   protected void parse_main(ByteBuffer buffer, BHeader header, LHeaderParseState s) {
@@ -381,7 +383,6 @@ class LHeaderType52 extends LHeaderType {
     parse_instruction_size(buffer, header, s);
     parse_number_size(buffer, header, s);
     parse_number_integrality(buffer, header, s);
-    parse_tail(buffer, header, s);
     s.number = new LNumberType(s.lNumberSize, s.lNumberIntegrality, LNumberType.NumberMode.MODE_NUMBER);
   }
   
@@ -406,9 +407,49 @@ class LHeaderType52 extends LHeaderType {
     write_instruction_size(out, header, object);
     write_number_size(out, header, object);
     write_number_integrality(out, header, object);
-    write_tail(out, header, object);
   }
   
+}
+
+class LHeaderType52 extends LHeaderType {
+
+  @Override
+  protected void parse_main(ByteBuffer buffer, BHeader header, LHeaderParseState s) {
+    parse_format(buffer, header, s);
+    parse_endianness(buffer, header, s);
+    parse_int_size(buffer, header, s);
+    parse_size_t_size(buffer, header, s);
+    parse_instruction_size(buffer, header, s);
+    parse_number_size(buffer, header, s);
+    parse_number_integrality(buffer, header, s);
+    parse_tail(buffer, header, s);
+    s.number = new LNumberType(s.lNumberSize, s.lNumberIntegrality, LNumberType.NumberMode.MODE_NUMBER);
+  }
+
+  @Override
+  public List<Directive> get_directives() {
+    return Arrays.asList(new Directive[] {
+       Directive.FORMAT,
+       Directive.ENDIANNESS,
+       Directive.INT_SIZE,
+       Directive.SIZE_T_SIZE,
+       Directive.INSTRUCTION_SIZE,
+       Directive.NUMBER_FORMAT,
+    });
+  }
+
+  @Override
+  public void write(OutputStream out, BHeader header, LHeader object) throws IOException {
+    write_format(out, header, object);
+    write_endianness(out, header, object);
+    write_int_size(out, header, object);
+    write_size_t_size(out, header, object);
+    write_instruction_size(out, header, object);
+    write_number_size(out, header, object);
+    write_number_integrality(out, header, object);
+    write_tail(out, header, object);
+  }
+
 }
 
 class LHeaderType53 extends LHeaderType {

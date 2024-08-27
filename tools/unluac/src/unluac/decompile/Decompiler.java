@@ -320,7 +320,7 @@ public class Decompiler {
         operations.add(new RegisterSet(line, A, ConstantExpression.createDouble((double) code.sBx(line))));
         break;
       case LOADK:
-        operations.add(new RegisterSet(line, A, f.getConstantExpression(Bx)));
+        operations.add(new RegisterSet(line, A, f.getConstantExpression(Bx - 1)));
         break;
       case LOADKX:
         if(line + 1 > code.length || code.op(line + 1) != Op.EXTRAARG) throw new IllegalStateException();
@@ -343,10 +343,10 @@ public class Decompiler {
         operations.add(new LoadNil(line, A, A + B));
         break;
       case GETGLOBAL:
-        operations.add(new RegisterSet(line, A, f.getGlobalExpression(Bx)));
+        operations.add(new RegisterSet(line, A, f.getGlobalExpression(Bx - 1)));
         break;
       case SETGLOBAL:
-        operations.add(new GlobalSet(line, f.getGlobalName(Bx), r.getExpression(A, line)));
+        operations.add(new GlobalSet(line, f.getGlobalName(Bx - 1), r.getExpression(A, line)));
         break;
       case GETUPVAL:
         operations.add(new RegisterSet(line, A, upvalues.getExpression(B)));

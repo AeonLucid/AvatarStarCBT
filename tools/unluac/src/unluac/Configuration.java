@@ -21,7 +21,7 @@ public class Configuration {
     DEFAULT,
     FINDER,
   }
-  
+
   public boolean rawstring;
   public Mode mode;
   public VariableMode variable;
@@ -30,6 +30,7 @@ public class Configuration {
   public String typemap;
   public String opmap;
   public String output;
+  public String lua_version;
   
   public Configuration() {
     rawstring = false;
@@ -39,6 +40,7 @@ public class Configuration {
     luaj = false;
     opmap = null;
     output = null;
+    lua_version = null;
   }
   
   public Configuration(Configuration other) {
@@ -48,6 +50,7 @@ public class Configuration {
     strict_scope = other.strict_scope;
     opmap = other.opmap;
     output = other.output;
+    lua_version = other.lua_version;
   }
   
   public Output getOutput() {

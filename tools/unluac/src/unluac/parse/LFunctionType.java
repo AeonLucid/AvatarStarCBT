@@ -18,6 +18,7 @@ abstract public class LFunctionType extends BObjectType<LFunction> {
     switch(type) {
       case LUA50: return new LFunctionType50();
       case LUA51: return new LFunctionType51();
+      case LUA52Alpha: return new LFunctionType52Alpha();
       case LUA52: return new LFunctionType52();
       case LUA53: return new LFunctionType53();
       case LUA54: return new LFunctionType54();
@@ -34,6 +35,7 @@ abstract public class LFunctionType extends BObjectType<LFunction> {
     int lenParameter;
     int vararg;
     int maximumStackSize;
+    int envreg;
     int length;
     int[] code;
     BList<LObject> constants;
@@ -279,6 +281,50 @@ class LFunctionType51 extends LFunctionType {
     write_debug(out, header, object);
   }
   
+}
+
+class LFunctionType52Alpha extends LFunctionType {
+
+  protected void parse_main(ByteBuffer buffer, BHeader header, LFunctionParseState s) {
+    s.name = header.string.parse(buffer, header);
+    s.lineBegin = header.integer.parse(buffer, header).asInt();
+    s.lineEnd = header.integer.parse(buffer, header).asInt();
+    s.lenParameter = 0xFF & buffer.get();
+    s.vararg = 0xFF & buffer.get();
+    s.maximumStackSize = 0xFF & buffer.get();
+    s.envreg = 0xFF & buffer.get();
+    parse_code(buffer, header, s);
+    parse_constants(buffer, header, s);
+    parse_upvalues(buffer, header, s);
+    parse_debug(buffer, header, s);
+  }
+
+  @Override
+  public List<Directive> get_directives() {
+    return Arrays.asList(new Directive[] {
+      Directive.LINEDEFINED,
+      Directive.LASTLINEDEFINED,
+      Directive.NUMPARAMS,
+      Directive.IS_VARARG,
+      Directive.MAXSTACKSIZE,
+      Directive.SOURCE,
+    });
+  }
+
+  @Override
+  public void write(OutputStream out, BHeader header, LFunction object) throws IOException {
+    header.integer.write(out, header, new BInteger(object.linedefined));
+    header.integer.write(out, header, new BInteger(object.lastlinedefined));
+    out.write(object.numParams);
+    out.write(object.vararg);
+    out.write(object.maximumStackSize);
+    write_code(out, header, object);
+    write_constants(out, header, object);
+    write_upvalues(out, header, object);
+    header.string.write(out, header, object.name);
+    write_debug(out, header, object);
+  }
+
 }
 
 class LFunctionType52 extends LFunctionType {
