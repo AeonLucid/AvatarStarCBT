@@ -5,6 +5,13 @@ The version targeted is a closed beta test held in 2013.
 
 ## Notes
 
+### Lua differences
+
+The lua scripts are written using an alpha version of Lua `5.2`. This is why the lua files still have a `5.1` header.  
+
+lua commit https://github.com/lua/lua/tree/193ce46970dda16e129ebb28cae085ecf469d702  
+luac commit https://github.com/lua/luac/tree/79e59651d71d5748d911959749d0bbc05fd99c88
+
 ### Unpack client.exe
 
 The main client executable is packed by Apex Protect, to unpack place a breakpoint on `0x0116606D jmp eax`.  

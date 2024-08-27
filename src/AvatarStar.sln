@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvatarStar.Server.Game", "A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvatarStar.Server", "AvatarStar.Server\AvatarStar.Server.csproj", "{83D4465F-7D21-47B1-BAC9-AA30EED9B17F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvatarStar.Tools.PdeUnpacker", "AvatarStar.Tools.PdeUnpacker\AvatarStar.Tools.PdeUnpacker.csproj", "{BCB716C5-FEA1-46D9-A664-6CEEE8EA020D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,5 +31,9 @@ Global
 		{83D4465F-7D21-47B1-BAC9-AA30EED9B17F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83D4465F-7D21-47B1-BAC9-AA30EED9B17F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83D4465F-7D21-47B1-BAC9-AA30EED9B17F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCB716C5-FEA1-46D9-A664-6CEEE8EA020D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCB716C5-FEA1-46D9-A664-6CEEE8EA020D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCB716C5-FEA1-46D9-A664-6CEEE8EA020D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCB716C5-FEA1-46D9-A664-6CEEE8EA020D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

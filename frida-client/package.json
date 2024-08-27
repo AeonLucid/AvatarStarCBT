@@ -1,0 +1,15 @@
+{
+  "name": "frida-agent-avatar-star",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "main": "agent/index.ts",
+  "scripts": {
+    "inject": "esbuild agent/index.ts --minify --bundle --platform=node --outfile=_agent.js --sourcemap=inline && frida -f \"D:\\Games\\CherryDeGames\\Avatar Star\\client.exe\" -l _agent.js -- -ip 127.0.0.1 -port 9532 -token AuthToken -title AvatarStar -local en_sg"
+  },
+  "devDependencies": {
+    "@types/frida-gum": "^18.7.0",
+    "@types/node": "^20.8.10",
+    "esbuild": "^0.19.5"
+  }
+}
