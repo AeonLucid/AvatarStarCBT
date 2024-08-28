@@ -1,4 +1,6 @@
-﻿using System.Net.Sockets;
+﻿using System.Buffers;
+using System.Buffers.Binary;
+using System.Net.Sockets;
 using Serilog;
 
 namespace AvatarStar.Server.Login;
@@ -11,10 +13,9 @@ public class LoginClient : Client
 
     protected override async Task HandleAsync(PacketReader reader)
     {
-        var packetLen = reader.ReadShort();
         var packetId = reader.ReadByte();
         
-        Log.Debug("Handling packet {PacketId} with payload length {PacketLen}", packetId, packetLen - 3);
+        Log.Debug("Handling packet {PacketId} with payload length {PacketLen}", packetId, reader.Remaining);
 
         switch (packetId)
         {
@@ -73,13 +74,35 @@ public class LoginClient : Client
 
     protected override ClientBuffer CreateBuffer()
     {
-        return new ClientBuffer(minPacketLength: 3, packetLengthSize: 2);
+        return new LoginClientBuffer();
+    }
+
+    protected override Task SendAsync(ArraySegment<byte> data)
+    {
+        var bufferLen = data.Count + sizeof(short);
+        var buffer = ArrayPool<byte>.Shared.Rent(bufferLen);
+        
+        try
+        {
+            // Write packet length.
+            BinaryPrimitives.WriteInt16LittleEndian(buffer, (short)bufferLen);
+            
+            // Write payload.
+            data.CopyTo(new ArraySegment<byte>(buffer, 2, data.Count));
+            
+            return base.SendAsync(new ArraySegment<byte>(buffer, 0, bufferLen));
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer);
+        }
     }
 
     private async Task WritePacket0(ServerErrorCode errorCode)
     {
-        using var writer = new PacketWriter(0);
+        using var writer = new PacketWriter();
         
+        writer.WriteByte(0);
         writer.WriteInt((int)errorCode);
         
         await SendAsync(writer);
@@ -91,8 +114,9 @@ public class LoginClient : Client
     /// </summary>
     private async Task WritePacket1()
     {
-        using var writer = new PacketWriter(1);
+        using var writer = new PacketWriter();
         
+        writer.WriteByte(1);
         writer.WriteByte(1);
         writer.WriteString("Test"); // Size >= 0 and < 260
         writer.WriteBool(false);
@@ -110,8 +134,9 @@ public class LoginClient : Client
     /// </summary>
     private async Task WritePacket2()
     {
-        using var writer = new PacketWriter(2);
+        using var writer = new PacketWriter();
         
+        writer.WriteByte(2);
         // SendMessageW LPARAM
         writer.WriteByte(1);
         // serverStringOne
@@ -131,8 +156,9 @@ public class LoginClient : Client
     /// </summary>
     private async Task WritePacket3(ServerErrorCode errorCode, string? authToken)
     {
-        using var writer = new PacketWriter(3);
+        using var writer = new PacketWriter();
         
+        writer.WriteByte(3);
         // WPARAM (ErrorCode)
         writer.WriteInt((int)errorCode);
         
@@ -159,7 +185,9 @@ public class LoginClient : Client
     /// </summary>
     private async Task WritePacket4()
     {
-        using var writer = new PacketWriter(4);
+        using var writer = new PacketWriter();
+        
+        writer.WriteByte(4);
         
         for (var i = 0; i < ServerManager.Servers.Length; i++)
         {

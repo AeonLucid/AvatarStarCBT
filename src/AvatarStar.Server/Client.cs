@@ -92,8 +92,13 @@ public abstract class Client
     
     protected abstract ClientBuffer CreateBuffer();
 
-    protected async Task SendAsync(PacketWriter writer)
+    protected virtual async Task SendAsync(ArraySegment<byte> data)
     {
-        await _socket.SendAsync(writer.GetData(), SocketFlags.None);
+        await _socket.SendAsync(data, SocketFlags.None);
+    }
+
+    protected virtual async Task SendAsync(PacketWriter writer)
+    {
+        await SendAsync(writer.ToBuffer());
     }
 }

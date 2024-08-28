@@ -1,26 +1,24 @@
 ﻿using System.Buffers;
-using System.Buffers.Binary;
 using AvatarStar.Server.Utilities;
 using Serilog;
 using Serilog.Events;
 
 namespace AvatarStar.Server;
 
-public class ClientBuffer : IDisposable
+public abstract class ClientBuffer : IDisposable
 {
     private const int BufferSize = 4096;
-    private const int MinimalPacketSize = 3;
     
-    private readonly int _minPacketLength;
-    private readonly int _packetLengthSize;
-    
+    private readonly int _minBufferSize;
+    private readonly bool _packetSizeInclusive;
+
     private IMemoryOwner<byte> _buffer;
     private int _bufferLen;
     
-    public ClientBuffer(int minPacketLength, int packetLengthSize)
+    public ClientBuffer(int minBufferSize, bool packetSizeInclusive)
     {
-        _minPacketLength = minPacketLength;
-        _packetLengthSize = packetLengthSize;
+        _minBufferSize = minBufferSize;
+        _packetSizeInclusive = packetSizeInclusive;
         _buffer = MemoryPool<byte>.Shared.Rent(BufferSize);
         _bufferLen = 0;
     }
@@ -55,26 +53,34 @@ public class ClientBuffer : IDisposable
         var bufferPos = 0;
         
         // Read packets from buffer
-        while (_bufferLen - bufferPos >= MinimalPacketSize)
+        while (_bufferLen - bufferPos >= _minBufferSize)
         {
-            var packetSize = _packetLengthSize switch
+            var packetSizeLen = 0;
+            var packetSize = ReadPacketSize(_buffer.Memory.Slice(bufferPos).Span, ref packetSizeLen);
+            if (packetSize == -1)
             {
-                1 => _buffer.Memory.Span[bufferPos],
-                2 => BinaryPrimitives.ReadInt16LittleEndian(_buffer.Memory.Span.Slice(bufferPos)),
-                4 => BinaryPrimitives.ReadInt32LittleEndian(_buffer.Memory.Span.Slice(bufferPos)),
-                _ => throw new InvalidOperationException("Invalid packet length size")
-            };
+                throw new ClientBufferException("Invalid packet size");
+            }
             
             if (packetSize > _bufferLen)
             {
                 break;
             }
+
+            var payloadLen = _packetSizeInclusive ? packetSize - packetSizeLen : packetSize;
+            var payloadSpan = _buffer.Memory.Slice(bufferPos + packetSizeLen, payloadLen);
+            var payloadData = payloadSpan.ToArray();
             
-            var packetData = _buffer.Memory.Slice(bufferPos, packetSize);
-            
-            packets.Add(new PacketReader(packetData.ToArray()));
-            
-            bufferPos += packetSize;
+            packets.Add(new PacketReader(payloadData));
+
+            if (_packetSizeInclusive)
+            {
+                bufferPos += packetSize;
+            }
+            else
+            {
+                bufferPos += packetSize + packetSizeLen;
+            }
         }
 
         // Shift buffer
@@ -90,7 +96,9 @@ public class ClientBuffer : IDisposable
         
         return packets;
     }
-    
+
+    protected abstract int ReadPacketSize(Span<byte> buffer, ref int packetSizeLen);
+
     public void Dispose()
     {
         _buffer.Dispose();

@@ -9,13 +9,10 @@ public class PacketWriter : IDisposable
     private readonly byte[] _data;
     private int _pos;
 
-    public PacketWriter(byte packetId)
+    public PacketWriter()
     {
         _data = ArrayPool<byte>.Shared.Rent(1024);
         _pos = 0;
-
-        WriteShort(0); // Reserve space for packet size
-        WriteByte(packetId); // Write packet id
     }
 
     public void WriteBool(bool value)
@@ -58,9 +55,8 @@ public class PacketWriter : IDisposable
         WriteBytes(Encoding.UTF8.GetBytes(value));
     }
     
-    public byte[] GetData()
+    public byte[] ToBuffer()
     {
-        BinaryPrimitives.WriteInt16LittleEndian(_data.AsSpan(0), (short)_pos);
         return _data.AsSpan(0, _pos).ToArray();
     }
 
