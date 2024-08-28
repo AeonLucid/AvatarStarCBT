@@ -8,7 +8,7 @@ public class LoginClientBuffer : ClientBuffer
     {
     }
 
-    protected override int ReadPacketSize(Span<byte> buffer, ref int packetSizeLen)
+    protected override int ReadPacketSize(Span<byte> buffer, out int packetSizeLen)
     {
         packetSizeLen = sizeof(short);
         return BinaryPrimitives.ReadInt16LittleEndian(buffer);

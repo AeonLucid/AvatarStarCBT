@@ -55,8 +55,7 @@ public abstract class ClientBuffer : IDisposable
         // Read packets from buffer
         while (_bufferLen - bufferPos >= _minBufferSize)
         {
-            var packetSizeLen = 0;
-            var packetSize = ReadPacketSize(_buffer.Memory.Slice(bufferPos).Span, ref packetSizeLen);
+            var packetSize = ReadPacketSize(_buffer.Memory.Slice(bufferPos).Span, out var packetSizeLen);
             if (packetSize == -1)
             {
                 throw new ClientBufferException("Invalid packet size");
@@ -97,7 +96,7 @@ public abstract class ClientBuffer : IDisposable
         return packets;
     }
 
-    protected abstract int ReadPacketSize(Span<byte> buffer, ref int packetSizeLen);
+    protected abstract int ReadPacketSize(Span<byte> buffer, out int packetSizeLen);
 
     public void Dispose()
     {
