@@ -1,32 +1,40 @@
-﻿using System.Net;
-using System.Net.Sockets;
-using AvatarStar.Server;
-using AvatarStar.Server.Game;
+﻿using AvatarStar.Server.Game;
+using AvatarStar.Server.Game.Config;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Verbose()
+    .MinimumLevel.Debug()
+    .Enrich.FromLogContext()
     .WriteTo.Console()
     .CreateLogger();
 
-Log.Information("Starting");
-
-var clientHandler = new ClientHandler();
-var server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
-server.Bind(new IPEndPoint(IPAddress.Any, 9532));
-server.Listen(10);
-
-Log.Information("Listening on *:9532");
-
-while (true)
+try
 {
-    var clientSocket = await server.AcceptAsync();
-    var client = new GameClient(clientHandler, clientSocket);
-
-    clientHandler.AddClient(client);
+    var builder = Host.CreateApplicationBuilder(args);
     
-    Log.Information("Accepted connection from {Ip}:{Port}", client.RemoteEndPoint.Address, client.RemoteEndPoint.Port);
+    builder.Environment.ContentRootPath = Directory.GetCurrentDirectory();
+    // builder.Configuration.AddJsonFile("settings.json", optional: true);
+    builder.Configuration.AddJsonFile("Config/AvatarSelection.json", optional: false, reloadOnChange: true);
+    builder.Configuration.AddEnvironmentVariables(prefix: "AS_");
+    builder.Configuration.AddCommandLine(args);
 
-    client.Start();
+    builder.Services.Configure<AvatarSelectionConfig>(builder.Configuration.GetSection(AvatarSelectionConfig.Section));
+    builder.Services.AddSerilog();
+    builder.Services.AddHostedService<GameServerService>();
+
+    var host = builder.Build();
+    await host.RunAsync();
+    return 0;
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Host terminated unexpectedly");
+    return 1;
+}
+finally
+{
+    await Log.CloseAndFlushAsync();
 }

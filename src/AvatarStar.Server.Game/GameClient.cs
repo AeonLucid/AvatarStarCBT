@@ -1,19 +1,22 @@
 ﻿using System.Buffers;
-using System.Drawing;
 using System.Net.Sockets;
+using AvatarStar.Server.Game.Config;
+using AvatarStar.Server.Game.Rpc;
 using AvatarStar.Server.Utilities;
-using Luaon.Json;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Options;
 using Serilog;
 
 namespace AvatarStar.Server.Game;
 
 public class GameClient : Client
 {
+    private readonly IOptionsMonitor<AvatarSelectionConfig> _avatarSelectionMonitor;
+    
     private int _lobbyState;
     
-    public GameClient(ClientHandler clientHandler, Socket socket) : base(clientHandler, socket)
+    public GameClient(ClientHandler clientHandler, Socket socket, IOptionsMonitor<AvatarSelectionConfig> avatarSelectionMonitor) : base(clientHandler, socket)
     {
+        _avatarSelectionMonitor = avatarSelectionMonitor;
         _lobbyState = 1;
     }
 
@@ -155,219 +158,14 @@ public class GameClient : Client
                 } 
                 else if (rpcName == "sysavatar_list")
                 {
-                    writer = new PacketWriter();
-                    writer.WriteByte(0); // packetId
-                    writer.WriteInt(rpcId);
-
-                    // var testCount = 1;
-                    var testOffset = (rpcId * 0.01f);
+                    var config = _avatarSelectionMonitor.CurrentValue;
+                    var configAvatarId = int.Parse(rpcArgs["sysCharacterId"]);
+                    var configAvatar = config.SysCharacters[configAvatarId];
                     
-                    var suitList = LuaSerializer.Serialize(new object[]
+                    var suitList = LuaSerializer.Serialize(new[]
                     {
-                        new
-                        {
-                            avatar = new
-                            {
-                                avatarId = int.Parse(rpcArgs["sysCharacterId"]),
-                                // skin = "{{'skin',1,-1,1,255,255,255,0,0,0,0,0,0}}",
-                                // hair = "{{'hair',1,0,1,255,255,255,0,0,0,0,0,0}}",
-                                // eye = "{{'eye',1,0,1,255,255,255,0,0,0,0,0,0}}",
-                                // mouth = "{{'mouth',1,0,1,255,255,255,0,0,0,0,0,0}}",
-                                // immobileDown = "{}",
-                                // eye = 1,
-                                // mouth = 1,
-                                // immobileDown = 1,
-                                // eye = 1,
-                                // mouth = 1,
-                                // nose = 1,
-                                // ear = 1,
-                                // beard = 1,
-                                // hair = 1,
-                                // helmet = 1,
-                                // underwear = 1,
-                                // outerwear = 1,
-                                // trousers = 1,
-                                // glove = 1,
-                                // shoes = 1,
-                                // decal = 1,
-                                // movable = 1,
-                                // immobile = 1,
-                                // immobileUp = 1,
-                                // immobileDown = 1
-                            },
-                            part = new object[]
-                            {
-                                // hair
-                                // femalecommandos01_hair_lod0
-                                new
-                                {
-                                    partId = 7,
-                                    value = "{'guardman_hair_lod0',7,0,1,83,227,227,0,0,0,0,0,0}",
-                                },
-                                
-                                new
-                                {
-                                    partId = 7,
-                                    value = "{'guardmans_hair_lod0',7,0,1,100,255,255,0,0,0,0,0,0}",
-                                },
-                                new
-                                {
-                                    partId = 7,
-                                    value = "{'guardman02_hair_lod0',7,0,1,100,255,255,0,0,0,0,0,0}",
-                                },
-                                new
-                                {
-                                    partId = 7,
-                                    value = "{'guardman01_hair_lod0',7,0,1,100,255,255,0,0,0,0,0,0}",
-                                },
-                                new
-                                {
-                                    partId = 7,
-                                    value = "{'guardman_hair_lod0',7,0,1,100,255,255,0,0,0,0,0,0}",
-                                },
-                                
-                                new
-                                {
-                                    partId = 7,
-                                    value = "{'airforce_hair_lod0',7,0,1,100,255,255,0,0,0,0,0,0}",
-                                },
-                                new
-                                {
-                                    partId = 7,
-                                    value = "{'atongmu_hair',7,0,1,100,255,255,0,0,0,0,0,0}",
-                                },
-                                new
-                                {
-                                    partId = 7,
-                                    value = "{'bashenan_hair',7,0,1,100,255,255,0,0,0,0,0,0}",
-                                },
-                                new
-                                {
-                                    partId = 7,
-                                    value = "{'bocheheinie_hair_lod0',7,0,1,100,255,255,0,0,0,0,0,0}",
-                                },
-                                new
-                                {
-                                    partId = 7,
-                                    value = "{'bomber_hair_lod0',7,0,1,100,255,255,0,0,0,0,0,0}",
-                                },
-                                new
-                                {
-                                    partId = 7,
-                                    value = "{'brs_hair_lod0',7,0,1,100,255,255,0,0,0,0,0,0}",
-                                },
-                                new
-                                {
-                                    partId = 7,
-                                    value = "{'cavalier_hair_lod0',7,0,1,100,255,255,0,0,0,0,0,0}",
-                                },
-                                new
-                                {
-                                    partId = 7,
-                                    value = "{'chaoren_hair_lod0',7,0,1,100,255,255,0,0,0,0,0,0}",
-                                },
-                                new
-                                {
-                                    partId = 7,
-                                    value = "{'dahuangfeng_hair_lod0',7,0,1,100,255,255,0,0,0,0,0,0}",
-                                },
-                                new
-                                {
-                                    partId = 7,
-                                    value = "{'demonhunter_hair_lod0',7,0,1,100,255,255,0,0,0,0,0,0}",
-                                },
-                                new
-                                {
-                                    partId = 7,
-                                    value = "{'femalecommandos01_hair_lod0',7,0,1,100,255,255,0,0,0,0,0,0}",
-                                },
-                                new
-                                {
-                                    partId = 7,
-                                    value = "{'femalecommandos02_hair_lod0',7,0,1,100,255,255,0,0,0,0,0,0}",
-                                },
-                                new
-                                {
-                                    partId = 7,
-                                    value = "{'guardwoman02_hair_lod0',7,0,1,100,255,255,0,0,0,0,0,0}",
-                                },
-                                new
-                                {
-                                    partId = 7,
-                                    value = "{'guardwomanss_hair_lod0',7,0,1,100,255,255,0,0,0,0,0,0}",
-                                },
-                                new
-                                {
-                                    partId = 7,
-                                    value = "{'guardwomans_hair_lod0',7,0,1,100,255,255,0,0,0,0,0,0}",
-                                },
-                                new
-                                {
-                                    partId = 2,
-                                    value = LuaMethods.GetEyeInfo( 
-                                            texResName: "guardman_eye", 
-                                            
-                                            leftTranslateX: 0.17f, 
-                                            leftTranslateY: -0.1f - testOffset, 
-                                            leftTheta: 0.1f, 
-                                            leftScaleX: 1f, 
-                                            leftScaleY: 1f,
-                                            
-                                            rightTranslateX: -0.17f, 
-                                            rightTranslateY: -0.1f - testOffset, 
-                                            rightTheta: -0.1f, 
-                                            rightScaleX: 1f, 
-                                            rightScaleY: 1f,
-                                            
-                                            colors: [/* Eyebrow */ Color.Black, /* Eyelash */ Color.Black, /* Pupil */ Color.FromArgb(0, 110, 166)])
-                                },
-                                new
-                                {
-                                    // mouth
-                                    partId = 3,
-                                    value = LuaMethods.GetFaceAnimInfo("one_mouth", 3, 0.0f, 0.0f, 0f, 1.75f, 1.0f, [Color.Black, Color.Black, Color.Black])
-                                },
-                                new
-                                {
-                                    // mouth
-                                    partId = 3,
-                                    value = LuaMethods.GetFaceAnimInfo("guardman_mouth", 3, 0.0f, 0.0f, 0f, 1.0f, 1.0f, [Color.Black])
-                                },
-                                new
-                                {
-                                    // immobileDown (trinket)
-                                    // string.format("{'%s',%d,%d,%s}", data.res_name, data.part_id, data.index_in_layer, GetChannelInfoStr(data))
-                                    // 0 = /mesh/character/thirdperson/avatar/mesh_femalecommandossss_trinket.mesh
-                                    // 1 = /mesh/character/thirdperson/avatar/skin/mesh_femalecommandossss_trinket.mesh
-                                    // 2 = /mesh/character/thirdperson/avatar/head/eye/mesh_femalecommandossss_trinket.mesh
-                                    // 3 = /mesh/character/thirdperson/avatar/head/mouth/mesh_femalecommandossss_trinket.mesh
-                                    // 4 = /mesh/character/thirdperson/avatar/head/nose/mesh_femalecommandossss_trinket.mesh
-                                    // 5 = /mesh/character/thirdperson/avatar/head/ear/mesh_femalecommandossss_trinket.mesh
-                                    // 6 = /mesh/character/thirdperson/avatar/head/beard/mesh_femalecommandossss_trinket.mesh
-                                    // 7 = /mesh/character/thirdperson/avatar/head/hair/mesh_femalecommandossss_trinket.mesh
-                                    // 8 = /mesh/character/thirdperson/avatar/head/helmet/mesh_femalecommandossss_trinket.mesh
-                                    // 9 = /mesh/character/thirdperson/avatar/dress/underwear/mesh_femalecommandossss_trinket.mesh
-                                    // 10 = /mesh/character/thirdperson/avatar/dress/outerwear/mesh_femalecommandossss_trinket.mesh
-                                    // 11 = /mesh/character/thirdperson/avatar/dress/trousers/mesh_femalecommandossss_trinket.mesh
-                                    // 12 = /mesh/character/thirdperson/avatar/dress/glove/mesh_femalecommandossss_trinket.mesh
-                                    // 13 = /mesh/character/thirdperson/avatar/dress/shoes/mesh_femalecommandossss_trinket.mesh
-                                    // 14 = /mesh/character/thirdperson/avatar/decal/mesh_femalecommandossss_trinket.mesh
-                                    // 15 = /mesh/character/thirdperson/avatar/trinket/movable/mesh_femalecommandossss_trinket.mesh
-                                    // 16 = /mesh/character/thirdperson/avatar/trinket/aboveneck/mesh_femalecommandossss_trinket.mesh
-                                    // 17 = /mesh/character/thirdperson/avatar/trinket/upperbody/mesh_femalecommandossss_trinket.mesh
-                                    // 18 = /mesh/character/thirdperson/avatar/trinket/lowerbody/mesh_femalecommandossss_trinket.mesh
-                                    // 19 = /mesh/character/thirdperson/avatar/wingsmesh_femalecommandossss_trinket.mesh
-                                    // 20 = /mesh/character/thirdperson/avatar/left_ringmesh_femalecommandossss_trinket.mesh
-                                    // 21 = /mesh/character/thirdperson/avatar/right_ringmesh_femalecommandossss_trinket.mesh
-                                    // 22 = /mesh/character/thirdperson/avatar/badgemesh_femalecommandossss_trinket.mesh
-                                    // 23 = /mesh/character/thirdperson/avatar/mesh_femalecommandossss_trinket.mesh
-                                    // 24 = /mesh/character/thirdperson/avatar//animation/character/thirdperson/mesh_femalecommandossss_trinket.mesh
-                                    // 25 = /mesh/character/thirdperson/avatar/animsetmesh_femalecommandossss_trinket.mesh
-                                    partId = 18,
-                                    value = "{{'femalecommandossss01_trinket_lod0',18,1,1,100,100,100,0,0,0,0,0,0}}",
-                                }
-                            }
-                        }
+                        SysAvatarListResponse.SuitList.FromConfig(configAvatarId, configAvatar.Male),
+                        SysAvatarListResponse.SuitList.FromConfig(configAvatarId, configAvatar.Female),
                     });
                     
                     var weapons = LuaSerializer.Serialize(new object[]

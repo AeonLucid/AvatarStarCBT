@@ -1,11 +1,15 @@
 ﻿using Luaon.Json;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace AvatarStar.Server.Game;
 
 public static class LuaSerializer
 {
-    private static readonly JsonSerializer serializer = JsonSerializer.CreateDefault();
+    private static readonly JsonSerializer serializer = JsonSerializer.CreateDefault(new JsonSerializerSettings
+    {
+        ContractResolver = new CamelCasePropertyNamesContractResolver()
+    });
     
     public static string Serialize(object obj)
     {

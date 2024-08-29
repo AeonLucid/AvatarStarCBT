@@ -1,0 +1,180 @@
+﻿{
+  "AvatarSelection": {
+    "SysCharacters": {
+      "1": {
+        "Male": {
+          "Options": {
+            "Head": [
+              {
+                "Resource": "guardmans_hair_lod0",
+                "Colors": [
+                  "0,100,255,255"
+                ]
+              },
+              {
+                "Resource": "guardman02_hair_lod0",
+                "Colors": [
+                  "0,100,255,255"
+                ]
+              },
+              {
+                "Resource": "guardman01_hair_lod0",
+                "Colors": [
+                  "0,100,255,255"
+                ]
+              },
+              {
+                "Resource": "guardman_hair_lod0",
+                "Colors": [
+                  "0,100,255,255"
+                ]
+              }
+            ],
+            "Eye": [
+              {
+                "Resource": "guardman_eye",
+                "LeftTranslateX": 0.17,
+                "LeftTranslateY": -0.11,
+                "LeftTheta": 0.0,
+                "LeftScaleX": 1.0,
+                "LeftScaleY": 1.0,
+                "RightTranslateX": -0.17,
+                "RightTranslateY": -0.11,
+                "RightTheta": 0.0,
+                "RightScaleX": 1.0,
+                "RightScaleY": 1.0,
+                "Colors": [
+                  "0,0,0,0",
+                  "0,0,0,0",
+                  "0,0,110,166"
+                ]
+              }
+            ],
+            "Mouth": [
+              {
+                "Resource": "one_mouth",
+                "TranslateX": 0.0,
+                "TranslateY": 0.0,
+                "Theta": 0.0,
+                "ScaleX": 1.75,
+                "ScaleY": 1.0,
+                "Colors": [
+                  "0,0,0,0"
+                ]
+              },
+              {
+                "Resource": "guardman_mouth",
+                "TranslateX": 0.0,
+                "TranslateY": 0.0,
+                "Theta": 0.0,
+                "ScaleX": 1.75,
+                "ScaleY": 1.0,
+                "Colors": [
+                  "0,0,0,0"
+                ]
+              }
+            ],
+            "Trinket": [
+              [
+                {
+                  "Resource": "femalecommandossss01_trinket_lod0",
+                  "Colors": [
+                    "0,100,100,100"
+                  ]
+                }
+              ]
+            ]
+          }
+        },
+        "Female": {
+          "Options": {
+            "Head": [
+              {
+                "Resource": "guardwoman02_hair_lod0",
+                "Colors": [
+                  "0,100,255,255"
+                ]
+              },
+              {
+                "Resource": "guardwomanss_hair_lod0",
+                "Colors": [
+                  "0,100,255,255"
+                ]
+              },
+              {
+                "Resource": "guardwomans_hair_lod0",
+                "Colors": [
+                  "0,100,255,255"
+                ]
+              },
+              {
+                "Resource": "guardwoman_hair_lod0",
+                "Colors": [
+                  "0,100,255,255"
+                ]
+              }
+            ],
+            "Eye": [
+              {
+                "Resource": "guardwoman_eye",
+                "LeftTranslateX": 0.17,
+                "LeftTranslateY": -0.11,
+                "LeftTheta": 0.0,
+                "LeftScaleX": 1.0,
+                "LeftScaleY": 1.0,
+                "RightTranslateX": -0.17,
+                "RightTranslateY": -0.11,
+                "RightTheta": 0.0,
+                "RightScaleX": 1.0,
+                "RightScaleY": 1.0,
+                "Colors": [
+                  "0,0,0,0",
+                  "0,0,0,0",
+                  "0,0,110,166"
+                ]
+              }
+            ],
+            "Mouth": [
+              {
+                "Resource": "one_mouth",
+                "TranslateX": 0.0,
+                "TranslateY": 0.0,
+                "Theta": 0.0,
+                "ScaleX": 1.75,
+                "ScaleY": 1.0,
+                "Colors": [
+                  "0,0,0,0"
+                ]
+              },
+              {
+                "Resource": "guardwoman_mouth",
+                "TranslateX": 0.0,
+                "TranslateY": 0.0,
+                "Theta": 0.0,
+                "ScaleX": 1.75,
+                "ScaleY": 1.0,
+                "Colors": [
+                  "0,0,0,0"
+                ]
+              }
+            ],
+            "Trinket": [
+              [
+                {
+                  "Resource": "femalecommandossss01_trinket_lod0",
+                  "Colors": [
+                    "0,100,100,100"
+                  ]
+                }
+              ]
+            ]
+          }
+        }
+      },
+      "2": {
+      },
+      "3": {
+      }
+    }
+  }
+}

@@ -95,4 +95,18 @@ public class LuaMethods
         
         return builder.ToString();
     }
+    
+    public static string GetSpartInfo(string resName, int partId, int indexInLayer, Color[] colors)
+    {
+        var builder = new StringBuilder();
+
+        builder.Append('{');
+        builder.Append($"'{resName}',");
+        builder.Append($"{partId},");
+        builder.Append($"{indexInLayer},");
+        builder.Append(GetChannelInfo(colors));
+        builder.Append('}');
+        
+        return builder.ToString();
+    }
 }
