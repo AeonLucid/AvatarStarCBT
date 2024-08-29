@@ -12,6 +12,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="CXuesong.Luaon" Version="0.2.7" />
+      <PackageReference Include="CXuesong.Luaon.Json" Version="0.2.1" />
       <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
     </ItemGroup>
 
